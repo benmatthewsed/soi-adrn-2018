@@ -94,15 +94,33 @@ ggsave(filename = here("figures", "03-eg_histories.png"), plot = eg_histories, t
 
 # ages 17-18, years 1992 and 2000
 
-year <- rep(1929:2011, each = 61)
-year <- as.data.frame(year)
-age <- rep(0:60, 83)
-age <- as.data.frame(age)
-z <- rep(0:60, 83)
-z <- as.data.frame(z)
-df <- bind_cols(year, age, z) %>% 
-  rename(Year = year,
-         Age = age)
+berg_year <- rep((1992-18):2000, each = 20)
+berg_year <- as.data.frame(berg_year)
+berg_age <- rep(0:19, 27)
+berg_age <- as.data.frame(berg_age)
+berg_z <- rep(0:19, 27)
+berg_z <- as.data.frame(berg_z)
+berg_df <- bind_cols(berg_year, berg_age, berg_z) %>% 
+  rename(Year = berg_year,
+         Age = berg_age,
+         z = berg_z)
+
+berg_axes <- 
+berg_df %>% 
+  ggplot(aes(x = Year, y = Age)) +
+  coord_fixed(ratio = 1, xlim = c(1974, 2000), ylim = c(0, 19)) +
+  geom_abline(data = lines, aes(intercept = intercept, slope = slope), colour = "grey90") +
+  geom_hline(yintercept = seq(0, 60, 5), colour = "grey50") +
+  geom_vline(xintercept = seq(1925, 2016, 5), colour = "grey50") +
+  scale_x_continuous(breaks = seq(1975, 2000, 5)) + #specify numbers every five years
+  theme_bw()
+
+berg_data <- tribble(~Year, ~Age, ~cohort,
+        1992, 17.5, "One", 
+        2000, 17.5, "Two")
+
+berg_axes +
+  geom_point(data = berg_data, aes(x = Year, y = Age, colour = cohort), size = 3)
 
 
 # plot trimmed and split histories ----------------------------------------
